@@ -45,12 +45,15 @@
     albumToggle.setAttribute('aria-expanded', String(expanded));
     albumToggle.innerHTML = expanded ? 'Gấp album <span aria-hidden="true">♡</span>' : 'Xòe album <span aria-hidden="true">♡</span>';
   });
-  document.getElementById('viewAlbum').addEventListener('click', async () => {
-    await revealAlbum();
-    album.classList.add('is-revealed');
-    album.scrollIntoView({ behavior: motion.matches ? 'instant' : 'smooth', block: 'start' });
-    albumToggle.focus({ preventScroll: true });
-  });
+  const viewAlbumBtn = document.getElementById('viewAlbum');
+  if (viewAlbumBtn) {
+    viewAlbumBtn.addEventListener('click', async () => {
+      await revealAlbum();
+      album.classList.add('is-revealed');
+      album.scrollIntoView({ behavior: motion.matches ? 'instant' : 'smooth', block: 'start' });
+      albumToggle.focus({ preventScroll: true });
+    });
+  }
 
   function reflowScene(changeLayout) {
     layoutAnimations.forEach(animation => animation.cancel());
@@ -139,20 +142,25 @@
   }
 
   function renderGreeting() {
-    document.getElementById('cardRecipient').textContent = greeting.recipient;
-    const paragraphs = greeting.message.split(/\n\s*\n/).map(text => {
-      const paragraph = document.createElement('span');
-      paragraph.className = 'message-paragraph';
-      paragraph.textContent = text;
-      return paragraph;
-    });
-    document.getElementById('cardMessage').replaceChildren(...paragraphs);
-    document.getElementById('cardSender').textContent = greeting.sender;
+    const elRecipient = document.getElementById('cardRecipient');
+    if (elRecipient) elRecipient.textContent = greeting.recipient;
+    const elMessage = document.getElementById('cardMessage');
+    if (elMessage) {
+      const paragraphs = greeting.message.split(/\n\s*\n/).filter(Boolean).map(text => {
+        const paragraph = document.createElement('span');
+        paragraph.className = 'message-paragraph';
+        paragraph.textContent = text;
+        return paragraph;
+      });
+      elMessage.replaceChildren(...paragraphs);
+    }
+    const elSender = document.getElementById('cardSender');
+    if (elSender) elSender.textContent = greeting.sender;
   }
 
   function showReading() {
     reading.hidden = false;
-    editor.hidden = true;
+    if (editor) editor.hidden = true;
     dialog.setAttribute('aria-labelledby', 'cardTitle');
     dialog.scrollTop = 0;
   }
@@ -187,44 +195,53 @@
     showReading();
   });
 
-  editButton.addEventListener('click', () => {
-    Object.keys(inputs).forEach(key => {
-      inputs[key].value = greeting[key];
-      inputs[key].setCustomValidity('');
+  if (editButton) {
+    editButton.addEventListener('click', () => {
+      Object.keys(inputs).forEach(key => {
+        if (inputs[key]) {
+          inputs[key].value = greeting[key];
+          inputs[key].setCustomValidity('');
+        }
+      });
+      reading.hidden = true;
+      if (editor) editor.hidden = false;
+      status.textContent = '';
+      dialog.setAttribute('aria-labelledby', 'editorTitle');
+      dialog.scrollTop = 0;
+      if (inputs.recipient) inputs.recipient.focus({ preventScroll: true });
+      revealCard();
     });
-    reading.hidden = true;
-    editor.hidden = false;
-    status.textContent = '';
-    dialog.setAttribute('aria-labelledby', 'editorTitle');
-    dialog.scrollTop = 0;
-    inputs.recipient.focus({ preventScroll: true });
-    revealCard();
-  });
-  document.getElementById('cancelEdit').addEventListener('click', () => {
-    showReading();
-    editButton.focus({ preventScroll: true });
-    revealCard();
-  });
-  Object.values(inputs).forEach(input => {
-    input.addEventListener('input', () => input.setCustomValidity(''));
-  });
-  editor.addEventListener('submit', event => {
-    event.preventDefault();
-    for (const input of Object.values(inputs)) {
-      input.setCustomValidity(input.value.trim() ? '' : 'Bạn viết vài chữ vào đây nhé.');
-    }
-    if (!editor.reportValidity()) return;
-    greeting = Object.fromEntries(Object.entries(inputs).map(([key, input]) => [key, input.value.trim()]));
-    renderGreeting();
-    showReading();
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(greeting));
-      status.textContent = 'Đã lưu lời chúc của bạn.';
-    } catch {
-      status.textContent = 'Đã cập nhật thiệp. Trình duyệt chưa cho phép lưu để dùng lần sau.';
-    }
-    editButton.focus({ preventScroll: true });
-    revealCard();
-  });
+  }
+  const cancelEditBtn = document.getElementById('cancelEdit');
+  if (cancelEditBtn) {
+    cancelEditBtn.addEventListener('click', () => {
+      showReading();
+      if (editButton) editButton.focus({ preventScroll: true });
+      revealCard();
+    });
+  }
+  if (editor) {
+    Object.values(inputs).forEach(input => {
+      if (input) input.addEventListener('input', () => input.setCustomValidity(''));
+    });
+    editor.addEventListener('submit', event => {
+      event.preventDefault();
+      for (const input of Object.values(inputs)) {
+        if (input) input.setCustomValidity(input.value.trim() ? '' : 'Bạn viết vài chữ vào đây nhé.');
+      }
+      if (!editor.reportValidity()) return;
+      greeting = Object.fromEntries(Object.entries(inputs).filter(([_, input]) => input).map(([key, input]) => [key, input.value.trim()]));
+      renderGreeting();
+      showReading();
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(greeting));
+        status.textContent = 'Đã lưu lời chúc của bạn.';
+      } catch {
+        status.textContent = 'Đã cập nhật thiệp. Trình duyệt chưa cho phép lưu để dùng lần sau.';
+      }
+      if (editButton) editButton.focus({ preventScroll: true });
+      revealCard();
+    });
+  }
   renderGreeting();
 })();
