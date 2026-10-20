@@ -61,21 +61,16 @@
       <header class="album-heading">
         <p class="album-note">Một chút kỷ niệm, dành riêng cho bạn</p>
         <h2 id="albumTitle">Những khoảnh khắc thương yêu</h2>
-        <button id="toggleAlbum" class="text-button" type="button" aria-expanded="false" aria-controls="albumPhotos">Xòe album <span aria-hidden="true">♡</span></button>
       </header>
-      <div id="albumPhotos" class="album-photos">
-        <!-- Mockup: thay src của từng ảnh bên dưới bằng các ảnh riêng của bạn. -->
-        <figure class="portrait-card album-card">
-          <div class="portrait-photo"><img src="./assets/portrait-placeholder.webp" alt="Ảnh kỷ niệm thứ nhất của người nhận thiệp" width="768" height="1024" decoding="async"></div>
-          <figcaption><span class="portrait-dedication">Một nụ cười rất thương.</span><span class="portrait-date">Những ngày thật vui</span></figcaption>
-        </figure>
-        <figure class="portrait-card album-card">
-          <div class="portrait-photo"><img src="./assets/portrait-placeholder.webp" alt="Ảnh kỷ niệm thứ hai của người nhận thiệp" width="768" height="1024" decoding="async" loading="lazy"></div>
-          <figcaption><span class="portrait-dedication">Bình yên từ điều nhỏ.</span><span class="portrait-date">Một khoảnh khắc dịu dàng</span></figcaption>
-        </figure>
-        <figure class="portrait-card album-card">
-          <div class="portrait-photo"><img src="./assets/portrait-placeholder.webp" alt="Ảnh kỷ niệm thứ ba của người nhận thiệp" width="768" height="1024" decoding="async" loading="lazy"></div>
-          <figcaption><span class="portrait-dedication">Mong bạn luôn rạng rỡ.</span><span class="portrait-date">Hôm nay và cả mai sau</span></figcaption>
+      <div id="albumPhotos" class="album-photos" style="display: flex; justify-content: center; padding: 18px 18px 14px;">
+        <figure class="portrait-card album-card" style="grid-area: auto; width: min(100%, 300px); max-width: 320px; transform: rotate(-1.5deg);">
+          <div class="portrait-photo" style="aspect-ratio: 1 / 1;">
+            <img src="./assets/no.jpg" alt="Ảnh con Nơ" width="724" height="726" decoding="async">
+          </div>
+          <figcaption>
+            <span class="portrait-dedication">Xinh đẹp rạng rỡ nha con Nơ 🎀</span>
+            <span class="portrait-date">20 / 10 / 2026</span>
+          </figcaption>
         </figure>
       </div>
       <p class="album-footnote">Có những điều nhỏ, nhớ lại vẫn thấy vui.</p>

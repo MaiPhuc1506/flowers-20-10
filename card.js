@@ -40,11 +40,13 @@
     return albumRevealPromise;
   }
 
-  albumToggle.addEventListener('click', () => {
-    const expanded = album.classList.toggle('is-spread');
-    albumToggle.setAttribute('aria-expanded', String(expanded));
-    albumToggle.innerHTML = expanded ? 'Gấp album <span aria-hidden="true">♡</span>' : 'Xòe album <span aria-hidden="true">♡</span>';
-  });
+  if (albumToggle) {
+    albumToggle.addEventListener('click', () => {
+      const expanded = album.classList.toggle('is-spread');
+      albumToggle.setAttribute('aria-expanded', String(expanded));
+      albumToggle.innerHTML = expanded ? 'Gấp album <span aria-hidden="true">♡</span>' : 'Xòe album <span aria-hidden="true">♡</span>';
+    });
+  }
   const viewAlbumBtn = document.getElementById('viewAlbum');
   if (viewAlbumBtn) {
     viewAlbumBtn.addEventListener('click', async () => {
